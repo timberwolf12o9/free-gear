@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#f1f3ee">
+<title>Free gear from Salphir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Condensed:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --page: #f1f3ee;
+  --surface: #ffffff;
+  --ink: #18211b;
+  --muted: #5f6b62;
+  --line: #dde2d9;
+  --green: #17762a;        /* the game's uncommon green, darkened until it reads on white */
+  --green-wash: #e6f2e4;
+  --amber: #94570a;
+  --body: Roboto, "Segoe UI", system-ui, -apple-system, sans-serif;
+  --tight: "Roboto Condensed", Roboto, "Segoe UI", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font: 400 16px/1.45 var(--body);
+  padding-bottom: calc(96px + env(safe-area-inset-bottom));
+}
+.wrap { max-width: 720px; margin: 0 auto; }
+
+header.top { padding: 22px 16px 14px; }
+h1 {
+  margin: 0 0 6px;
+  font: 700 30px/1.1 var(--tight);
+  letter-spacing: -0.01em;
+}
+header.top p { margin: 0; color: var(--muted); max-width: 46ch; }
+#updated { display: block; margin-top: 8px; font-size: 14px; }
+
+/* who you are: stays in reach while the list scrolls */
+.who {
+  position: sticky; top: 0; z-index: 5;
+  background: var(--page);
+  border-bottom: 1px solid var(--line);
+  padding: 8px 16px 10px;
+  display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1.25fr) 84px; gap: 8px;
+}
+.who.single { grid-template-columns: minmax(0, 1fr) 84px; }
+.view {
+  padding: 10px 16px 4px;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px;
+}
+label.field { display: block; min-width: 0; }
+label.field > span { display: block; font-size: 13px; color: var(--muted); margin-bottom: 2px; }
+select, input[type=number] {
+  width: 100%; height: 44px;
+  font: 500 16px var(--body); color: var(--ink);
+  background: var(--surface);
+  border: 1px solid #c3cbc0; border-radius: 8px;
+  padding: 0 10px;
+}
+input[type=number] { text-align: center; }
+.later {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; gap: 10px;
+  min-height: 44px; font-size: 15px;
+}
+.later input { width: 22px; height: 22px; accent-color: var(--green); margin: 0; flex: none; }
+:is(select, input, button, a):focus-visible { outline: 3px solid #2f9a45; outline-offset: 2px; }
+
+#status { padding: 10px 16px 0; color: var(--muted); font-size: 15px; }
+
+h2.group {
+  margin: 20px 16px 6px;
+  font: 700 19px/1.2 var(--tight);
+  display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+}
+h2.group small { font: 400 14px var(--body); color: var(--muted); white-space: nowrap; }
+p.groupnote { margin: -2px 16px 8px; color: var(--muted); font-size: 14px; }
+
+ul.rows { list-style: none; margin: 0; padding: 0; background: var(--surface); border-block: 1px solid var(--line); }
+li.row {
+  display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; gap: 12px;
+  align-items: start;
+  padding: 11px 16px;
+  border-top: 1px solid var(--line);
+}
+li.row:first-child { border-top: 0; }
+li.row.picked { background: var(--green-wash); }
+.icon {
+  width: 44px; height: 44px; border-radius: 7px;
+  border: 2px solid var(--green);
+  background: #dfe6dc center / cover no-repeat;
+  display: block;
+}
+.name { font: 700 18px/1.2 var(--tight); color: var(--green); overflow-wrap: anywhere; }
+.name .qty { color: var(--ink); font-weight: 500; }
+.kind { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; color: var(--muted); margin-top: 1px; }
+.kind .lvl { white-space: nowrap; color: var(--ink); }
+.kind .lvl.soon { color: var(--amber); font-weight: 500; }
+.stats { margin-top: 3px; font-size: 15px; line-height: 1.4; }
+.stats span { color: var(--muted); margin-right: 10px; white-space: nowrap; display: inline-block; }
+.stats span.want { color: var(--ink); font-weight: 700; }
+.tags { margin-top: 2px; font-size: 13px; color: var(--muted); }
+.tags .auction { color: var(--amber); }
+.tags .fit { margin-right: 10px; }
+button.pick {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 2px solid var(--green); background: var(--surface); color: var(--green);
+  font: 500 26px/1 var(--body); padding: 0; cursor: pointer;
+  display: grid; place-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+button.pick[aria-pressed=true] { background: var(--green); color: #fff; font-size: 20px; }
+
+button.linklike {
+  display: block; width: calc(100% - 32px); margin: 14px 16px 0;
+  min-height: 44px; padding: 8px 12px;
+  font: 500 15px var(--body); color: var(--green);
+  background: transparent; border: 1px dashed #9fb39f; border-radius: 8px; cursor: pointer;
+}
+.empty { margin: 18px 16px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.empty b { display: block; font: 700 19px var(--tight); margin-bottom: 4px; }
+
+footer { margin: 28px 16px 0; color: var(--muted); font-size: 14px; max-width: 60ch; }
+footer p { margin: 0 0 8px; }
+
+/* the list you are building */
+#tray {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+  background: var(--ink); color: #fff;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  transform: translateY(110%); transition: transform .18s ease-out;
+}
+#tray.open { transform: none; }
+#tray .inner { max-width: 720px; margin: 0 auto; display: flex; gap: 8px; align-items: center; }
+#tray button {
+  height: 48px; border-radius: 8px; border: 1px solid #55615a;
+  background: transparent; color: #fff; font: 500 16px var(--body); padding: 0 14px; cursor: pointer;
+}
+#tray button#send { flex: 1; background: #2f9a45; border-color: #2f9a45; font-weight: 700; }
+#said { position: fixed; left: 50%; bottom: calc(84px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+  background: var(--ink); color: #fff; padding: 8px 14px; border-radius: 8px; font-size: 15px;
+  opacity: 0; pointer-events: none; transition: opacity .15s; z-index: 11; max-width: 90vw; text-align: center; }
+#said.on { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { #tray, #said { transition: none; } }
+@media (min-width: 560px) {
+  h1 { font-size: 38px; }
+  .view { grid-template-columns: 1fr 1fr auto; align-items: end; }
+  .later { grid-column: auto; padding: 0 6px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Free gear from Salphir</h1>
+    <p>Greens I'm giving away. Pick your class and level, tap the ones you want, then send me your list.
+      <span id="updated"></span></p>
+  </header>
+
+  <div class="who" id="who">
+    <label class="field"><span>Class</span>
+      <select id="cls"></select></label>
+    <label class="field" id="roleField"><span>Spec</span>
+      <select id="role"></select></label>
+    <label class="field"><span>Level</span>
+      <input id="level" type="number" inputmode="numeric" min="1" max="80" placeholder="Any"></label>
+  </div>
+
+  <div class="view">
+    <label class="field"><span>Slot</span>
+      <select id="slot"></select></label>
+    <label class="field"><span>Order</span>
+      <select id="sort">
+        <option value="fit">Best for me first</option>
+        <option value="slot">By slot</option>
+        <option value="level">Highest level first</option>
+      </select></label>
+    <label class="later"><input id="later" type="checkbox"> <span>Also show gear for later levels</span></label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+  <main id="list"></main>
+
+  <footer>
+    <p>"On auction" pieces are up for sale right now, so one can sell before you ask. Everything else is sitting in my bank or mailbox.</p>
+    <p>What each class can wear follows Classic rules: mail for hunters and shamans and plate for warriors and paladins from level 40. If the game lets you wear something this page hides, use the button under the list to see it all.</p>
+    <p>In game, whisper or mail Salphir Timberwolf.</p>
+  </footer>
+</div>
+
+<div id="tray" aria-hidden="true">
+  <div class="inner">
+    <button id="send" type="button">Send my list</button>
+    <button id="copy" type="button">Copy</button>
+    <button id="clear" type="button">Clear</button>
+  </div>
+</div>
+<div id="said" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+/* ---------------------------------------------------------------- what each class can wear and what it wants
+   Weights say how much of a stat's worth the spec gets out of it (1 = all of it, 0 = nothing). */
+const ARMOR = { Cloth: 1, Leather: 2, Mail: 3, Plate: 4 };
+const RANGED = ["Bow", "Gun", "Crossbow", "Thrown"];
+const CLASSES = {
+  Warrior: { armor: [3, 4], shield: true,
+    one: ["Axe", "Sword", "Mace", "Dagger", "Fist weapon"], two: ["Axe", "Sword", "Mace", "Staff", "Polearm"], ranged: RANGED,
+    roles: {
+      "Arms or Fury": { str: 1, agi: .7, sta: .5, ap: 1, spi: .1, def: .2, dodge: .2, hp5: .2 },
+      "Tank": { sta: 1, str: .7, agi: .6, def: 1, dodge: 1, ap: .4, res: .2, hp5: .3 } } },
+  Paladin: { armor: [3, 4], shield: true,
+    one: ["Axe", "Sword", "Mace"], two: ["Axe", "Sword", "Mace", "Polearm"], ranged: [],
+    roles: {
+      "Retribution": { str: 1, sta: .5, agi: .6, ap: 1, int: .3, holy: .3, sp: .2 },
+      "Holy": { heal: 1, int: 1, sp: .55, sta: .5, spi: .4, mp5: 1, holy: .3 },
+      "Protection": { sta: 1, str: .6, int: .4, def: 1, dodge: .8, agi: .4, sp: .4, holy: .5, ap: .3 } } },
+  Hunter: { armor: [2, 3], shield: false,
+    one: ["Axe", "Sword", "Dagger", "Fist weapon"], two: ["Axe", "Sword", "Staff", "Polearm"], ranged: RANGED,
+    roles: { "Any": { agi: 1, ap: .9, sta: .5, int: .3, spi: .1, str: .1, mp5: .3 } } },
+  Rogue: { armor: [2, 2], shield: false,
+    one: ["Sword", "Mace", "Dagger", "Fist weapon"], two: [], ranged: RANGED,
+    roles: { "Any": { agi: 1, str: .6, ap: 1, sta: .5 } } },
+  Priest: { armor: [1, 1], shield: false,
+    one: ["Mace", "Dagger"], two: ["Staff"], ranged: ["Wand"],
+    roles: {
+      "Shadow": { sp: 1, shadow: 1, int: .7, spi: .7, sta: .5, mp5: .5 },
+      "Holy or Discipline": { heal: 1, int: .9, spi: .8, sp: .55, sta: .4, mp5: 1 } } },
+  Shaman: { armor: [2, 3], shield: true,
+    one: ["Axe", "Mace", "Dagger", "Fist weapon"], two: ["Axe", "Mace", "Staff"], ranged: [],
+    roles: {
+      "Enhancement": { str: 1, agi: .8, ap: 1, sta: .5, int: .4, sp: .2, mp5: .3 },
+      "Elemental": { sp: 1, nature: 1, fire: .5, frost: .5, int: .8, sta: .5, mp5: .8, spi: .2 },
+      "Restoration": { heal: 1, int: .9, mp5: 1, sp: .55, sta: .4, spi: .3 } } },
+  Mage: { armor: [1, 1], shield: false,
+    one: ["Sword", "Dagger"], two: ["Staff"], ranged: ["Wand"],
+    roles: {
+      "Frost": { sp: 1, frost: 1, int: .8, sta: .4, spi: .4, mp5: .4 },
+      "Fire": { sp: 1, fire: 1, int: .8, sta: .4, spi: .4, mp5: .4 },
+      "Arcane": { sp: 1, arcane: 1, int: .8, sta: .4, spi: .4, mp5: .4 } } },
+  Warlock: { armor: [1, 1], shield: false,
+    one: ["Sword", "Dagger"], two: ["Staff"], ranged: ["Wand"],
+    roles: { "Any": { sp: 1, shadow: 1, fire: .8, sta: .7, int: .6, spi: .3 } } },
+  Druid: { armor: [2, 2], shield: false,
+    one: ["Mace", "Dagger", "Fist weapon"], two: ["Mace", "Staff"], ranged: [],
+    roles: {
+      "Cat": { str: 1, agi: 1, ap: 1, sta: .5 },
+      "Bear": { sta: 1, agi: .8, str: .7, def: .8, dodge: 1, ap: .5 },
+      "Balance": { sp: 1, arcane: .9, nature: .9, int: .8, sta: .4, spi: .4, mp5: .5 },
+      "Restoration": { heal: 1, int: .9, spi: .7, mp5: 1, sp: .55, sta: .4 } } },
+};
+const HEAVY_FROM = 40;                       // the level a class moves up to its second armor type
+/* stat name on the item -> [weight key, what one point costs out of the item's stat allowance] */
+const STATS = {
+  "Strength": ["str", 1], "Agility": ["agi", 1], "Stamina": ["sta", 1], "Intellect": ["int", 1], "Spirit": ["spi", 1],
+  "Attack Power": ["ap", .5], "Spell Power": ["sp", .86], "Healing": ["heal", .45], "Spell Damage": ["sd", .86],
+  "Fire Spell Damage": ["fire", .7], "Frost Spell Damage": ["frost", .7], "Nature Spell Damage": ["nature", .7],
+  "Shadow Spell Damage": ["shadow", .7], "Arcane Spell Damage": ["arcane", .7], "Holy Spell Damage": ["holy", .7],
+  "Defense": ["def", 1.5], "Dodge %": ["dodge", 12], "Mana per 5 sec": ["mp5", 2.5], "Health per 5 sec": ["hp5", 2.5],
+  "Fire Resistance": ["res", 1], "Frost Resistance": ["res", 1], "Nature Resistance": ["res", 1],
+  "Shadow Resistance": ["res", 1], "Arcane Resistance": ["res", 1],
+};
+const SLOT_ORDER = ["Head", "Neck", "Shoulder", "Back", "Chest", "Wrist", "Hands", "Waist", "Legs", "Feet", "Finger",
+  "Trinket", "One-hand weapon", "Two-hand weapon", "Held in off-hand", "Shield", "Ranged weapon"];
+const GREAT = 0.7, GOOD = 0.45;
+
+function weightOf(w, key) {
+  if (key === "sd") return w.heal >= 1 ? 0 : (w.sp || 0);    // the damage rider on healing gear does nothing for a healer
+  return w[key] || 0;
+}
+/* Lowest level at which the class can put the piece on. Infinity = never. */
+function usableAt(it, c) {
+  if (!c) return it.req;
+  const need = it.req;
+  if (ARMOR[it.type]) {
+    const r = ARMOR[it.type];
+    if (r <= c.armor[0]) return need;
+    return r <= c.armor[1] ? Math.max(need, HEAVY_FROM) : Infinity;
+  }
+  if (it.slot === "Shield") return c.shield ? need : Infinity;
+  if (it.slot === "One-hand weapon") return c.one.includes(it.type) ? need : Infinity;
+  if (it.slot === "Two-hand weapon") return c.two.includes(it.type) ? need : Infinity;
+  if (it.slot === "Ranged weapon") return c.ranged.includes(it.type) ? need : Infinity;
+  return need;
+}
+/* Share of the piece's stats that the spec uses, 0 to 1. null when the piece has no known stats. */
+function fitOf(it, w) {
+  let worth = 0, used = 0;
+  const rider = "Healing" in it.stats;
+  for (const [name, amount] of Object.entries(it.stats)) {
+    const s = STATS[name];
+    if (!s) continue;
+    worth += s[1] * amount * weightOf(w, s[0]);
+    used += (name === "Spell Damage" && rider ? 0 : s[1]) * amount;
+  }
+  return used > 0 ? Math.min(1, worth / used) : null;
+}
+function kindOf(it) {
+  if (it.slot === "One-hand weapon") return "One-hand " + it.type.toLowerCase();
+  if (it.slot === "Two-hand weapon") return "Two-hand " + it.type.toLowerCase();
+  if (it.slot === "Ranged weapon") return it.type;
+  if (ARMOR[it.type]) return it.slot + ", " + it.type.toLowerCase();
+  return it.slot;
+}
+function fitWord(f) { return f == null ? "" : f >= GREAT ? "Great for you" : f >= GOOD ? "Good for you" : "Stats suit another class"; }
+
+/* ---------------------------------------------------------------- state */
+const $ = id => document.getElementById(id);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem("gear." + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem("gear." + k, JSON.stringify(v)); } catch (e) {} },
+};
+const state = {
+  cls: store.get("cls", ""), role: store.get("role", ""), level: store.get("level", ""),
+  later: store.get("later", false), slot: "", sort: "fit", all: false, weak: false,
+  picks: new Set(store.get("picks", [])),
+};
+let ITEMS = [];
+const keyOf = it => it.id + ":" + it.bonus;
+
+function fillControls() {
+  $("cls").innerHTML = '<option value="">Any class</option>' +
+    Object.keys(CLASSES).map(c => `<option>${c}</option>`).join("");
+  if (!CLASSES[state.cls]) state.cls = "";
+  $("cls").value = state.cls;
+  fillRoles();
+  $("level").value = state.level;
+  $("later").checked = state.later;
+  const slots = SLOT_ORDER.filter(s => ITEMS.some(it => it.slot === s));
+  $("slot").innerHTML = '<option value="">Every slot</option>' + slots.map(s => `<option>${s}</option>`).join("");
+}
+function fillRoles() {
+  const c = CLASSES[state.cls];
+  const names = c ? Object.keys(c.roles) : [];
+  const show = names.length > 1;
+  $("roleField").hidden = !show;
+  $("who").classList.toggle("single", !show);
+  $("role").innerHTML = names.map(r => `<option>${r}</option>`).join("");
+  if (!names.includes(state.role)) state.role = names[0] || "";
+  $("role").value = state.role;
+}
+
+/* ---------------------------------------------------------------- drawing */
+const esc = s => String(s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+
+function rowHtml(e, showFit) {
+  const it = e.it, k = keyOf(it), on = state.picks.has(k);
+  const stats = Object.entries(it.stats).map(([name, n]) => {
+    const s = STATS[name], want = e.w && s && weightOf(e.w, s[0]) >= 0.5;
+    const text = name === "Dodge %" ? `+${n}% Dodge` : `+${n} ${name}`;
+    return `<span${want ? ' class="want"' : ""}>${esc(text)}</span>`;
+  });
+  if (it.dps) stats.push(`<span>${it.dps.toFixed(1)} damage per second</span>`);
+  else if (it.armor) stats.push(`<span>${it.armor} armor</span>`);
+  const soon = e.at > e.level;
+  const lvl = it.req ? (soon ? `From level ${e.at}` : `Level ${it.req}`) : "";
+  const tags = [];
+  if (showFit && e.fit != null) tags.push(`<span class="fit">${fitWord(e.fit)}</span>`);
+  if (e.at === Infinity) tags.push(`<span class="fit">Your class can't wear this</span>`);
+  if (it.where.includes("auction")) tags.push('<span class="auction">On auction, can sell first</span>');
+  const icon = it.icon ? ` style="background-image:url('https://wow.zamimg.com/images/wow/icons/large/${encodeURIComponent(it.icon)}.jpg')"` : "";
+  return `<li class="row${on ? " picked" : ""}" data-k="${k}">
+    <span class="icon"${icon}></span>
+    <div>
+      <div class="name">${esc(it.name)}${it.qty > 1 ? ` <span class="qty">x${it.qty}</span>` : ""}</div>
+      <div class="kind"><span>${esc(kindOf(it))}</span><span class="lvl${soon && e.at !== Infinity ? " soon" : ""}">${e.at === Infinity ? "Level " + it.req : lvl}</span></div>
+      ${stats.length ? `<div class="stats">${stats.join("")}</div>` : ""}
+      ${tags.length ? `<div class="tags">${tags.join("")}</div>` : ""}
+    </div>
+    <button class="pick" type="button" aria-pressed="${on}" aria-label="${on ? "Take off my list" : "Add to my list"}: ${esc(it.name)}">${on ? "&#10003;" : "+"}</button>
+  </li>`;
+}
+function groupHtml(title, rows, showFit, note) {
+  if (!rows.length) return "";
+  return `<h2 class="group"><span>${esc(title)}</span><small>${rows.length} ${rows.length === 1 ? "piece" : "pieces"}</small></h2>` +
+    (note ? `<p class="groupnote">${esc(note)}</p>` : "") +
+    `<ul class="rows">${rows.map(e => rowHtml(e, showFit)).join("")}</ul>`;
+}
+const byLevel = (a, b) => b.it.req - a.it.req || (b.fit || 0) - (a.fit || 0) || a.it.name.localeCompare(b.it.name);
+const byFit = (a, b) => (b.fit || 0) - (a.fit || 0) || b.it.req - a.it.req || a.it.name.localeCompare(b.it.name);
+
+function draw() {
+  const c = CLASSES[state.cls] || null;
+  const w = c ? c.roles[state.role] : null;
+  const level = parseInt(state.level, 10) || 0;
+  const who = c ? `${level ? "level " + level + " " : ""}${Object.keys(c.roles).length > 1 ? state.role + " " : ""}${state.cls}` : "";
+  const pool = ITEMS.filter(it => !state.slot || it.slot === state.slot)
+    .map(it => ({ it, w, level: level || Infinity, at: usableAt(it, c), fit: w ? fitOf(it, w) : null }));
+  const now = [], later = [], never = [], weak = [];
+  const poor = e => w && e.fit != null && e.fit < GOOD;       // wearable, but the stats are for someone else
+  for (const e of pool) {
+    if (e.at === Infinity) never.push(e);
+    else if (poor(e) && !state.weak) { if (e.at <= e.level || state.later) weak.push(e); }
+    else (e.at <= e.level ? now : later).push(e);
+  }
+
+  let html = "";
+  if (state.sort === "fit" && w) {
+    const tier = f => f == null ? 3 : f >= GREAT ? 0 : f >= GOOD ? 1 : 2;
+    const t = [[], [], [], []];
+    now.forEach(e => t[tier(e.fit)].push(e));
+    t.forEach(rows => rows.sort(byLevel));
+    html += groupHtml("Great for you", t[0], false, "The stats in bold are the ones your spec wants.")
+      + groupHtml("Good for you", t[1], false)
+      + groupHtml("Wearable, but the stats suit another class", t[2], false)
+      + groupHtml("No stats to judge", t[3], false);
+  } else if (state.sort === "level") {
+    html += groupHtml(level ? "Wearable now" : "All gear", now.slice().sort(byLevel), !!w);
+  } else {
+    for (const s of SLOT_ORDER) html += groupHtml(s, now.filter(e => e.it.slot === s).sort(w ? byFit : byLevel), !!w);
+  }
+  if (state.later && later.length) {
+    later.sort((a, b) => a.at - b.at || (b.fit || 0) - (a.fit || 0) || a.it.name.localeCompare(b.it.name));
+    html += groupHtml("For later levels", later, !!w);
+  }
+  if (state.all && never.length) html += groupHtml(`Not for a ${state.cls}`, never.sort(byLevel), false);
+
+  if (!now.length && !(state.later && later.length) && !(state.all && never.length)) {
+    html += `<div class="empty"><b>Nothing ${who ? "for a " + esc(who) : "here"} right now</b>` +
+      (weak.length ? "Nothing here has your stats. The button below shows what you could still wear."
+        : later.length && !state.later ? `${later.length} ${later.length === 1 ? "piece fits" : "pieces fit"} at a higher level. Tick "Also show gear for later levels" to see them.`
+        : state.slot ? "Try every slot instead of just this one."
+        : "The stash changes most days, so check back.") + `</div>`;
+  }
+  if (weak.length) html += `<button class="linklike" id="showWeak" type="button">Show ${weak.length} more a ${esc(state.cls)} can wear, with stats for other classes</button>`;
+  if (never.length && !state.all) html += `<button class="linklike" id="showAll" type="button">Show the ${never.length} ${never.length === 1 ? "piece" : "pieces"} a ${esc(state.cls)} can't wear</button>`;
+  $("list").innerHTML = html;
+
+  const hidden = later.length && !state.later ? `, ${later.length} more at higher levels` : "";
+  $("status").textContent = !ITEMS.length ? "" : c
+    ? (state.weak ? `${now.length} ${now.length === 1 ? "piece" : "pieces"} a ${who} can wear now${hidden}.`
+      : `${now.length} ${now.length === 1 ? "piece suits" : "pieces suit"} a ${who} now${hidden}.`)
+    : `${now.length} ${now.length === 1 ? "piece" : "pieces"}${level ? " for level " + level + " and under" : ""}${hidden}. Choose your class to see what suits you.`;
+  const sortSel = $("sort");
+  sortSel.options[0].disabled = !w;
+  if (!w && state.sort === "fit") { sortSel.value = "slot"; } else sortSel.value = state.sort;
+  drawTray();
+}
+function drawTray() {
+  const n = state.picks.size;
+  $("tray").classList.toggle("open", n > 0);
+  $("tray").setAttribute("aria-hidden", n > 0 ? "false" : "true");
+  $("send").textContent = `Send my list (${n})`;
+}
+
+/* ---------------------------------------------------------------- asking for things */
+function listText() {
+  const names = ITEMS.filter(it => state.picks.has(keyOf(it))).map(it => "- " + it.name);
+  const c = CLASSES[state.cls];
+  const level = parseInt(state.level, 10) || 0;
+  const who = c ? ` for my ${level ? "level " + level + " " : ""}${Object.keys(c.roles).length > 1 ? state.role + " " : ""}${state.cls}` : "";
+  return `Could I have these from your free gear${who}?\n${names.join("\n")}`;
+}
+let saidTimer = 0;
+function say(text) {
+  const el = $("said");
+  el.textContent = text; el.classList.add("on");
+  clearTimeout(saidTimer); saidTimer = setTimeout(() => el.classList.remove("on"), 2600);
+}
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch (e) {}
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  let ok = false;
+  try { ok = document.execCommand("copy"); } catch (e) {}
+  ta.remove();
+  return ok;
+}
+async function send() {
+  const text = listText();
+  if (navigator.share) {
+    try { await navigator.share({ text }); return; }
+    catch (e) { if (e && e.name === "AbortError") return; }
+  }
+  const phone = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if (phone) { location.href = "sms:?&body=" + encodeURIComponent(text); return; }
+  say(await copyText(text) ? "Copied. Paste it into a message to me." : "Copying failed. Write the names down instead.");
+}
+
+/* ---------------------------------------------------------------- wiring */
+function start() {
+  const G = window.GEAR;
+  if (!G || !Array.isArray(G.items)) {
+    $("status").textContent = "The list didn't load. Check your connection and reload the page.";
+    return;
+  }
+  ITEMS = G.items;
+  const have = new Set(ITEMS.map(keyOf));
+  const gone = [...state.picks].filter(k => !have.has(k));
+  if (gone.length) {
+    gone.forEach(k => state.picks.delete(k));
+    store.set("picks", [...state.picks]);
+    say(`${gone.length} ${gone.length === 1 ? "piece" : "pieces"} you picked ${gone.length === 1 ? "is" : "are"} gone now.`);
+  }
+  if (G.updated) {
+    const d = new Date(G.updated * 1000), today = new Date();
+    const day = d.toDateString() === today.toDateString() ? "today"
+      : d.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+    $("updated").textContent = `${ITEMS.length} pieces. List updated ${day} at ${d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}.`;
+  }
+  fillControls();
+  draw();
+
+  $("cls").addEventListener("change", e => { state.cls = e.target.value; state.all = false; state.weak = false; fillRoles(); if (CLASSES[state.cls]) state.sort = "fit";
+    store.set("cls", state.cls); store.set("role", state.role); draw(); });
+  $("role").addEventListener("change", e => { state.role = e.target.value; store.set("role", state.role); draw(); });
+  $("level").addEventListener("input", e => { state.level = e.target.value.replace(/\D/g, "").slice(0, 2); store.set("level", state.level); draw(); });
+  $("later").addEventListener("change", e => { state.later = e.target.checked; store.set("later", state.later); draw(); });
+  $("slot").addEventListener("change", e => { state.slot = e.target.value; draw(); });
+  $("sort").addEventListener("change", e => { state.sort = e.target.value; draw(); });
+  $("list").addEventListener("click", e => {
+    if (e.target.id === "showAll") { state.all = true; draw(); return; }
+    if (e.target.id === "showWeak") { state.weak = true; draw(); return; }
+    const btn = e.target.closest("button.pick");
+    if (!btn) return;
+    const row = btn.closest("li.row"), k = row.dataset.k;
+    const on = !state.picks.has(k);
+    on ? state.picks.add(k) : state.picks.delete(k);
+    store.set("picks", [...state.picks]);
+    document.querySelectorAll(`li.row[data-k="${k}"]`).forEach(r => {
+      r.classList.toggle("picked", on);
+      const b = r.querySelector("button.pick");
+      b.setAttribute("aria-pressed", on); b.innerHTML = on ? "&#10003;" : "+";
+      b.setAttribute("aria-label", (on ? "Take off my list: " : "Add to my list: ") + r.querySelector(".name").textContent);
+    });
+    drawTray();
+  });
+  $("send").addEventListener("click", send);
+  $("copy").addEventListener("click", async () => say(await copyText(listText()) ? "Copied. Paste it into a message to me." : "Copying failed. Write the names down instead."));
+  $("clear").addEventListener("click", () => { state.picks.clear(); store.set("picks", []); draw(); });
+}
+/* the list changes during the day: fetch it fresh instead of trusting the browser's copy */
+(function load() {
+  const s = document.createElement("script");
+  s.src = "data.js?" + Math.floor(Date.now() / 60000);
+  s.onload = start; s.onerror = start;
+  document.head.appendChild(s);
+})();
+</script>
+</body>
+</html>
